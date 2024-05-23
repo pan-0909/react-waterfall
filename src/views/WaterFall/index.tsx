@@ -2,14 +2,14 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-23 15:16:19
+ * @LastEditTime: 2024-05-23 16:27:39
  * @Description: 
  * @FilePath: \react-waterfall\src\views\WaterFall\index.tsx
  */
 import './index.css'
 import React, { useRef, useEffect, useState } from 'react';
 
-function WaterFall() {
+const WaterFall = () => {
   /**
  * @description: 最少列数
  */
@@ -138,9 +138,10 @@ function WaterFall() {
     let columnHeight;
     for (let j = 0, k = cells.length; j < k; j++) {
       // 将单元格插入到最小的地方
-      columnIndex = getMinKey(columnHeights);
+      columnIndex = getMinKey(columnHeights); 
       columnHeight = columnHeights[columnIndex];
-      cells[j].style.height = `${cells[j].offsetHeight - CELL_PADDING}px`;
+      cells[j].style.height = `${cells[j].offsetHeight + CELL_PADDING}px`;
+      console.log(cells[j].offsetHeight,"height");
       cells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`;
       cells[j].style.top = `${columnHeight}px`;
       columnHeights[columnIndex] = columnHeight + GAP_HEIGHT + cells[j].offsetHeight;
@@ -156,7 +157,7 @@ function WaterFall() {
   let reflowCells = function () {
     // 计算调整大小后的新列计数。
     columnCount = getColumnCount();
-    console.log(columnCount,3333);
+    console.log(columnCount, 3333);
     if (columnHeights.length != columnCount) {
       // 重置列高度和容器宽度的数组。
       resetHeights(columnCount);
@@ -167,6 +168,7 @@ function WaterFall() {
   };
   interface Cell {
     img: string
+    height:number
   }
   const cellsFragmentRef = useRef([]);
   const [cells, setCells] = useState<Array<Cell>>([]);
@@ -211,25 +213,23 @@ function WaterFall() {
 
 
   const appendCellsDemo = (num: number) => {
+    console.log(num,"append");
+    let newCells = []
     for (let j = 0; j < num; j++) {
-      setCells([
-        {
+      let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+      newCells.push(
+        { 
+          height:key,
           img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
         },
-        {
-          img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
-        },
-        {
-          img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
-        },
-        {
-          img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
-        },
-        {
-          img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
-        }
-      ])
+      )
     }
+    console.log(newCells);
+    console.log(cells);
+    let c = cells.concat(newCells)
+    // setCells(cells,newCells);
+    setCells(c)
+    console.log(cells);
   }
 
   // Add 500ms throttle to window scroll.
@@ -257,7 +257,7 @@ function WaterFall() {
     setTimeout(() => {
       manageCells();
     }, 1000);
-    
+
     // 初始化列高度和容器宽度
     columnCount = getColumnCount();
     console.log(columnCount);
@@ -270,16 +270,18 @@ function WaterFall() {
       <h1>Waterfall Layout</h1>
       <div id='notice' className='off'></div>
       <div ref={cellsContainerRef} id="cells">
+        <div>
+        {cells.length}
+        </div>
         {cells.map((cell, index) => {
-          let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
           return (
             <div key={index} className="cell ready">
               <p>
                 <a href="#">
-                  <img src={cell.img} height={key} width="190" />
+                  <img src={cell.img} height={cell.height} width="190" />
                 </a>
               </p>
-              <h2><a href="#">demo img{index} </a></h2>
+              <h2><a href="#">demo img{cell.height}--{index} </a></h2>
             </div>
           )
         })}
