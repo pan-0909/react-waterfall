@@ -192,7 +192,6 @@ const WaterFall = () => {
     if (viewportBottom > getMinVal(columnHeights)) {
       appendCellsDemo(columnCount);
       console.log(222);
-      
     }
     managing = false;
     console.log(managing);
@@ -257,6 +256,7 @@ const WaterFall = () => {
   useEffect(() => {
     const noticeContainer = noticeContainerRef.current;
     const cellsContainer = cellsContainerRef.current;
+    delayedResize()
     window.addEventListener('resize', delayedResize);
     window.addEventListener('scroll', delayedScroll);
     reflowCells();
