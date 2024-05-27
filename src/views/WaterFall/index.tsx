@@ -10,12 +10,13 @@ import './index.css'
 import React, { useRef, useEffect, useState } from 'react';
 
 const WaterFall = () => {
+  const cellsContainerRef = useRef<HTMLDivElement>(null);
   /**
  * @description: 最少列数
  */
   let MIN_COLUMN_COUNT = 1;
   /**
-   * @description: 格子宽度
+   * @description: 格子宽度220
    */
   let COLUMN_WIDTH = 220;
   /**
@@ -68,9 +69,10 @@ const WaterFall = () => {
   interface Cell {
     img: string
     height: number
+    style: any
   }
   const [cells, setCells] = useState<Array<Cell>>([]);
-  
+
   // 获取数组中的最小值
   const getMinVal = (arr: number[]) => {
     console.log(arr);
@@ -113,57 +115,175 @@ const WaterFall = () => {
     return key;
   };
 
+  const getColumnCount = () => {
+    // 返回参数的最大值：为了设置每行最少的列数 
+    // Math.floor向下取整，返回整列
+    return Math.max(MIN_COLUMN_COUNT, Math.floor((document.body.offsetWidth + GAP_WIDTH) / (COLUMN_WIDTH + GAP_WIDTH)));
+  };
 
-  const init = (cells:any) => {
-    
+  // 重置列高度和数组
+  const resetHeights = (count: number) => {
+    columnHeights = [];
+    // setColumnHeights([])
+    for (let i = 0; i < count; i++) {
+      columnHeights.push(0);
+    }
+    cellsContainerRef.current!.style.width = `${count * (COLUMN_WIDTH + GAP_WIDTH) - GAP_WIDTH}px`;
+    console.log(cellsContainerRef.current!.style.width, "cellsContainerRef.width");
+
+  };
+
+  // 窗口布局变化
+  let delayedResize = function () {
+    console.log("窗口大小变化了");
+
+    clearTimeout(resizeDelay);
+    resizeDelay = setTimeout(reflowCells, 500);
+  };
+
+  //如果在调整大小后需要计算新的列数据。  
+  let reflowCells = function () {
+    // 计算调整大小后的新列计数。
+    columnCount = getColumnCount();
+    console.log(columnCount, "columnCount");
+
+    console.log(columnHeights.length, 3333);
+
+    if (columnHeights.length != columnCount) {
+      // 重置列高度和容器宽度的数组。
+      resetHeights(columnCount);
+      init([
+        {
+          height: 0,
+          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+          style: { left: "0", top: "0", height: "0" }
+        },
+        {
+          height: 0,
+          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+          style: { left: "0", top: "0", height: "0" }
+        },
+        {
+          height: 0,
+          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+          style: { left: "0", top: "0", height: "0" }
+        },
+        {
+          height: 0,
+          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+          style: { left: "0", top: "0", height: "0" }
+        },
+
+
+      ])
+    } else {
+      // manageCells();
+    }
+  };
+
+  // 设置盒子的高度
+  const init = (cells: any) => {
     let columnIndex;
-    let columnHeight;
+    let columnHeight;  // 最小的高度
+    // console.log(columnHeights, "columnHeights");
     for (let j = 0, k = cells.length; j < k; j++) {
+      columnIndex = getMinKey(columnHeights);
+      // console.log(columnIndex, "最小高度的下标");
+      columnHeight = columnHeights[columnIndex];
+      // console.log(columnHeight, "最小的高度");
       let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
       cells[j].height = key
-      console.log(cells[j].height);
-      columnHeights.push(cells[j].height)
-      console.log(cells[j].height);
-      console.log(CELL_PADDING);
-      console.log(cells[j].height+CELL_PADDING);
-      cells[j].style.height = `${cells[j].height + CELL_PADDING}px`;
-      // console.log( cells[j].style.height);
-      
-      // 将单元格插入到最小的地方
-      // columnIndex = getMinKey(columnHeights); 
-      // columnHeight = columnHeights[columnIndex];
-      
-      // cells[j].style.height = `${cells[j].offsetHeight + CELL_PADDING}px`;
-      // console.log(cells[j].offsetHeight,"height");
-      // cells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`;
-      // cells[j].style.top = `${columnHeight}px`;
-      // columnHeights[columnIndex] = columnHeight + GAP_HEIGHT + cells[j].offsetHeight;
-    } 
+      columnHeights[columnIndex] = columnHeight + GAP_HEIGHT * 4 + cells[j].height; //计算插入图片后的高度
+      // console.log(columnHeights, "高度arr");
+      cells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`; //计算left偏移
+      cells[j].style.top = `${columnHeight}px`;
+      cells[j].style.height = `${cells[j].offsetHeight + CELL_PADDING}px`; //计算height偏移
+
+      cells[j].style.height = `${cells[j].height + CELL_PADDING}px`; //计算外盒子高度
+    }
     setCells(cells)
+    console.log(cells,"set");
+    
   }
-  useEffect(()=>{
-    init([
-      { 
-        height:10,
-        img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
+
+  // 模仿后端发送请求
+  const getMoreData = () => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const viewportTop = scrollTop - cellsContainerRef.current!.offsetTop;
+    const viewportBottom = window.innerHeight + viewportTop;
+    console.log(viewportBottom,"窗口高度");
+    console.log(getMinVal(columnHeights),"盒子列表最小的高度");
+    console.log(columnHeights);
+    
+    if (viewportBottom > getMinVal(columnHeights)) {
+      appendCells(columnCount);
+      console.log(cells,222);
+    }
+  }
+
+
+  // 添加节点
+  const appendCells = (num: number) => {
+    console.log(cells,"cells");
+    console.log(num,"append");
+    let columnIndex;
+    let columnHeight;  // 最小的高度
+    let newCells = [
+      {
+        height: 0,
+        img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+        style: { left: "0", top: "0", height: "0" }
       },
-      { 
-        height:10,
-        img: 'https://th.bing.com/th/id/OIP.7KW5GT7NQ8yUGlBbCHEm0gHaNK?rs=1&pid=ImgDetMain'
-      },
-    ])
-  },[])
+    ]
+    
+    for (let j = 0; j < 1; j++) {
+      columnIndex = getMinKey(columnHeights);
+      // console.log(columnIndex, "最小高度的下标");
+      columnHeight = columnHeights[columnIndex];
+      // console.log(columnHeight, "最小的高度");
+      let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+      newCells[j].height = key
+      columnHeights[columnIndex] = columnHeight + GAP_HEIGHT * 4 + newCells[j].height; //计算插入图片后的高度
+      // console.log(columnHeights, "高度arr");
+      newCells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`; //计算left偏移
+      newCells[j].style.top = `${columnHeight}px`; //计算top偏移
+      // newCells[j].style.height = `${newCells[j].offsetHeight + CELL_PADDING}px`; //计算height高度
+      newCells[j].style.height = `${newCells[j].height + CELL_PADDING}px`; //计算外盒子高度
+    }
+
+    console.log(newCells,"newCells");
+    console.log(cells,"cells");
+    
+    let c = cells.concat(newCells)
+    console.log(c,"cccc");
+    
+    // setCells(cells,newCells);
+    setCells(c)
+  }
+
+  useEffect(() => {
+    delayedResize();
+    
+    window.addEventListener('resize', delayedResize);
+    window.addEventListener('scroll', getMoreData);
+    // 延迟0.5s,防止数据还没有加载
+    setTimeout(()=>{
+      getMoreData();
+    },2000)
+    // window.addEventListener('scroll', delayedScroll);
+  }, [])
   return (
     <>
-      <h1>Waterfall Layout</h1>
-      <div id='notice' className='off'></div>
-      <div id="cells">
-        <div>
+     <div>
           {cells.length}
         </div>
+      <h1>Waterfall Layout</h1>
+      <div id='notice' className='off'></div>
+      <div ref={cellsContainerRef} id="cells">
+       
         {cells.map((cell, index) => {
           return (
-            <div key={index} className="cell ready">
+            <div key={index} style={cell.style} className="cell ready">
               <p>
                 <a href="#">
                   <img src={cell.img} height={cell.height} width="190" />
