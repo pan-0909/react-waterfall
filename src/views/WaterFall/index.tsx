@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-27 18:03:17
+ * @LastEditTime: 2024-05-28 10:20:18
  * @Description: 
  * @FilePath: \react-waterfall\src\views\WaterFall\index.tsx
  */
@@ -203,22 +203,21 @@ const WaterFall = () => {
     }
     setCells(cells)
     console.log(cells,"set");
-    
   }
 
   // 模仿后端发送请求
   const getMoreData = () => {
+    managing = true;
     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     const viewportTop = scrollTop - cellsContainerRef.current!.offsetTop;
     const viewportBottom = window.innerHeight + viewportTop;
     console.log(viewportBottom,"窗口高度");
     console.log(getMinVal(columnHeights),"盒子列表最小的高度");
-    console.log(columnHeights);
-    
     if (viewportBottom > getMinVal(columnHeights)) {
       appendCells(columnCount);
-      console.log(cells,222);
+      console.log("窗口大");
     }
+    managing = false;
   }
 
 
@@ -234,9 +233,19 @@ const WaterFall = () => {
         img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
         style: { left: "0", top: "0", height: "0" }
       },
+      {
+        height: 0,
+        img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+        style: { left: "0", top: "0", height: "0" }
+      },
+      {
+        height: 0,
+        img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+        style: { left: "0", top: "0", height: "0" }
+      },
     ]
     
-    for (let j = 0; j < 1; j++) {
+    for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
       // console.log(columnIndex, "最小高度的下标");
       columnHeight = columnHeights[columnIndex];
@@ -254,23 +263,28 @@ const WaterFall = () => {
     console.log(newCells,"newCells");
     console.log(cells,"cells");
     
-    let c = cells.concat(newCells)
-    console.log(c,"cccc");
-    
+    setCells((prevCells) => [...prevCells, ...newCells]);
+  
     // setCells(cells,newCells);
-    setCells(c)
   }
+
+  // Add 500ms throttle to window scroll.
+  let delayedScroll = function () {
+    clearTimeout(scrollDelay);
+    if (!managing) {
+      // Avoid managing cells for unnecessity.
+      scrollDelay = setTimeout(getMoreData, 500);
+    }
+  };
 
   useEffect(() => {
     delayedResize();
     
     window.addEventListener('resize', delayedResize);
-    window.addEventListener('scroll', getMoreData);
-    // 延迟0.5s,防止数据还没有加载
-    setTimeout(()=>{
-      getMoreData();
-    },2000)
-    // window.addEventListener('scroll', delayedScroll);
+    // 延迟0.5s,防止数据还没有加载setInterval
+    // setTimeout(()=>{
+    // },2000)
+    window.addEventListener('scroll', delayedScroll);
   }, [])
   return (
     <>
