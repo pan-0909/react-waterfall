@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-28 10:20:18
+ * @LastEditTime: 2024-05-28 12:24:33
  * @Description: 
  * @FilePath: \react-waterfall\src\views\WaterFall\index.tsx
  */
@@ -177,11 +177,13 @@ const WaterFall = () => {
 
       ])
     } else {
-      // manageCells();
+      judgeAppend();
     }
   };
 
-  // 设置盒子的高度
+
+
+  // 初始化设置盒子的高度
   const init = (cells: any) => {
     let columnIndex;
     let columnHeight;  // 最小的高度
@@ -202,29 +204,40 @@ const WaterFall = () => {
       cells[j].style.height = `${cells[j].height + CELL_PADDING}px`; //计算外盒子高度
     }
     setCells(cells)
-    console.log(cells,"set");
+    console.log(cells, "set");
+    judgeAppend()
   }
 
-  // 模仿后端发送请求
-  const getMoreData = () => {
-    managing = true;
+  /**
+   * @description: 判断是否继续加载
+   * @return {boolean} true是需要继续加载，false是不需要
+   * @author: panrunjun
+   */
+  const judgeAppend = (): boolean => {
     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     const viewportTop = scrollTop - cellsContainerRef.current!.offsetTop;
     const viewportBottom = window.innerHeight + viewportTop;
-    console.log(viewportBottom,"窗口高度");
-    console.log(getMinVal(columnHeights),"盒子列表最小的高度");
+    console.log(viewportBottom, "窗口高度");
+    console.log(getMinVal(columnHeights), "盒子列表最小的高度");
     if (viewportBottom > getMinVal(columnHeights)) {
-      appendCells(columnCount);
       console.log("窗口大");
+      appendCells(columnCount);
+      setTimeout(()=>{
+        judgeAppend()
+      },500)
+      return true;
+    } else {
+      console.log("窗口小");
+      return false;
     }
-    managing = false;
+
   }
 
 
   // 添加节点
   const appendCells = (num: number) => {
-    console.log(cells,"cells");
-    console.log(num,"append");
+    console.log(cells, "cells");
+    console.log(num, "append");
     let columnIndex;
     let columnHeight;  // 最小的高度
     let newCells = [
@@ -244,7 +257,7 @@ const WaterFall = () => {
         style: { left: "0", top: "0", height: "0" }
       },
     ]
-    
+
     for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
       // console.log(columnIndex, "最小高度的下标");
@@ -260,26 +273,25 @@ const WaterFall = () => {
       newCells[j].style.height = `${newCells[j].height + CELL_PADDING}px`; //计算外盒子高度
     }
 
-    console.log(newCells,"newCells");
-    console.log(cells,"cells");
-    
+    console.log(newCells, "newCells");
+    console.log(cells, "cells");
+
     setCells((prevCells) => [...prevCells, ...newCells]);
-  
+
     // setCells(cells,newCells);
   }
 
-  // Add 500ms throttle to window scroll.
-  let delayedScroll = function () {
+  // 添加了一个 500 毫秒的节流（throttle）效果,防止滚动事件频发
+  const delayedScroll = () => {
     clearTimeout(scrollDelay);
     if (!managing) {
-      // Avoid managing cells for unnecessity.
-      scrollDelay = setTimeout(getMoreData, 500);
+      scrollDelay = setTimeout(judgeAppend, 500);
     }
   };
 
   useEffect(() => {
     delayedResize();
-    
+
     window.addEventListener('resize', delayedResize);
     // 延迟0.5s,防止数据还没有加载setInterval
     // setTimeout(()=>{
@@ -288,13 +300,13 @@ const WaterFall = () => {
   }, [])
   return (
     <>
-     <div>
-          {cells.length}
-        </div>
+      <div>
+        {cells.length}
+      </div>
       <h1>Waterfall Layout</h1>
       <div id='notice' className='off'></div>
       <div ref={cellsContainerRef} id="cells">
-       
+
         {cells.map((cell, index) => {
           return (
             <div key={index} style={cell.style} className="cell ready">
