@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-23 15:15:43
+ * @LastEditTime: 2024-05-28 14:18:04
  * @Description: 
  * @FilePath: \react-waterfall\src\App.tsx
  */
@@ -13,7 +13,7 @@ import WaterFall from './views/WaterFall';
 const App = () => {
   return (
     <>
-      <WaterFall></WaterFall>
+      <WaterFall num={3}></WaterFall>
     </>
   )
 }

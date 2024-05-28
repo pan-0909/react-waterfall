@@ -2,13 +2,14 @@
  * @Author: panrunjun
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-28 10:28:49
+ * @LastEditTime: 2024-05-28 14:22:56
  * @Description: 
  * @FilePath: \react-waterfall\README.md
 -->
 # react版本瀑布流布局
 ## 引入后使用WaterFall
-- 初始化的时候不能自适应
+- 先调用getColumnCount方法获取每列的盒子数目perPage
+- 把每列的盒子数目调用后端接口获取对应的数据，eg:getData(perPage)
 
 ## git提交规范
 - feat：提交新功能
