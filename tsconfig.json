@@ -8,16 +8,20 @@
 
      /* Bundler mode */
      "moduleResolution": "node",
-     "noEmit": true,
      "isolatedModules": true,
      "jsx": "react-jsx",
+    // "jsx": "preserve",
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true 
+    "esModuleInterop": true ,
+
+    "declaration": true, // 自动生成声明文件
+    "declarationDir": "dist", // 声明文件输出的目录
+    "emitDeclarationOnly": true, // 只输出声明文件，不转译ts文件
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
