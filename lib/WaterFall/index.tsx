@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 15:24:28
+ * @LastEditTime: 2024-05-29 18:00:41
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\lib\WaterFall\index.tsx
  */
@@ -12,7 +12,8 @@ import { WaterFallType } from './types'
 import getColumnCount from '../utils/getColumnCount';
 
 // props: WaterFallType.Props
-const WaterFall = () => {
+const WaterFall = ({ getData, onClick, newCellArr }: WaterFallType.Props) => {
+  console.log(newCellArr,"arrr");
   const cellsContainerRef = useRef<HTMLDivElement>(null);
   /**
 * @description: 最少列数
@@ -69,12 +70,8 @@ const WaterFall = () => {
    */
   let loading = false;
 
-  interface Cell {
-    img: string
-    height: number
-    style: any
-  }
-  const [cells, setCells] = useState<Array<Cell>>([]);
+
+  const [cells, setCells] = useState<Array<WaterFallType.Cell>>([]);
 
   // 获取数组中的最小值
   const getMinVal = (arr: number[]) => {
@@ -144,34 +141,12 @@ const WaterFall = () => {
   let reflowCells = function () {
     // 计算调整大小后的新列计数。
     let bodyWidth: number = document.body.offsetWidth;  // 获取页面宽度
-    columnCount = getColumnCount(bodyWidth,GAP_WIDTH, COLUMN_WIDTH, 1);
+    columnCount = getColumnCount(bodyWidth, GAP_WIDTH, COLUMN_WIDTH, 1);
+    getData(columnCount)
     if (columnHeights.length != columnCount) {
       // 重置列高度和容器宽度的数组。
       resetHeights(columnCount);
-      init([
-        {
-          height: 0,
-          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-          style: { left: "0", top: "0", height: "0" }
-        },
-        {
-          height: 0,
-          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-          style: { left: "0", top: "0", height: "0" }
-        },
-        {
-          height: 0,
-          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-          style: { left: "0", top: "0", height: "0" }
-        },
-        {
-          height: 0,
-          img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-          style: { left: "0", top: "0", height: "0" }
-        },
-
-
-      ])
+      init([])
     } else {
       judgeAppend();
     }
@@ -224,21 +199,24 @@ const WaterFall = () => {
 
   }
 
-
   // 添加节点
   const appendCells = (num: number) => {
+    
+    onClick()
+    console.log(newCellArr,"newCellArr");
+    
     let columnIndex;
     let columnHeight;  // 最小的高度
 
-    let newCellArr: Array<Cell> = []
+    // let newCellArr: Array<WaterFallType.Cell> = []
     // 初始化newCells数组
-    for (let i = 0; i < num; i++) {
-      newCellArr.push({
-        height: 0,
-        img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-        style: { left: "0", top: "0", height: "0" }
-      })
-    }
+    // for (let i = 0; i < num; i++) {
+    //   newCellArr.push({
+    //     height: 0,
+    //     img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+    //     style: { left: "0", top: "0", height: "0" }
+    //   })
+    // }
 
     for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
@@ -277,8 +255,10 @@ const WaterFall = () => {
     <>
       <div>
         {cells.length}
+        <button onClick={onClick}>
+          Click me
+        </button>
       </div>
-      <h1>Waterfall Layout</h1>
       <div id='notice' className='off'></div>
       <div ref={cellsContainerRef} id="cells">
 
