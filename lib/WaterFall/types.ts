@@ -4,7 +4,7 @@ import { type } from "os"
  * @Author: xx
  * @Date: 2024-05-28 13:27:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 18:25:33
+ * @LastEditTime: 2024-05-29 18:31:26
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\lib\WaterFall\types.ts
  */
@@ -18,7 +18,6 @@ namespace WaterFallType {
     // num: number   // 添加节点的数量
     getData: (num: number) => void
     onClick: () => void
-    newCellArr: Array<Cell>
     onValueChange:(newValue: any) => void
   }
 }
