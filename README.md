@@ -2,16 +2,22 @@
  * @Author: panrunjun
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 22:13:31
+ * @LastEditTime: 2024-05-29 22:16:54
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\README.md
 -->
 # react版本自适应瀑布流布局
 ## 引入后使用WaterFall
-- npm i react-waterfall-plugin下载
+- npm下载
+
+```javascript
+npm i react-waterfall-plugin
+```
+
 - 先调用getNum方法获取每列的盒子数目perPage
 - 把每列的盒子数目调用后端接口获取对应的数据，eg:getData(perPage)
 - 把后端传过来的数据放到list
+
 - 下面是我写的一个小demo
 
 ```javascript
