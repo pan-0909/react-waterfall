@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 18:00:41
+ * @LastEditTime: 2024-05-29 18:27:38
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\lib\WaterFall\index.tsx
  */
@@ -12,8 +12,7 @@ import { WaterFallType } from './types'
 import getColumnCount from '../utils/getColumnCount';
 
 // props: WaterFallType.Props
-const WaterFall = ({ getData, onClick, newCellArr }: WaterFallType.Props) => {
-  console.log(newCellArr,"arrr");
+const WaterFall = ({ getData, onClick,onValueChange }: WaterFallType.Props) => {
   const cellsContainerRef = useRef<HTMLDivElement>(null);
   /**
 * @description: 最少列数
@@ -203,20 +202,18 @@ const WaterFall = ({ getData, onClick, newCellArr }: WaterFallType.Props) => {
   const appendCells = (num: number) => {
     
     onClick()
-    console.log(newCellArr,"newCellArr");
-    
     let columnIndex;
     let columnHeight;  // 最小的高度
 
-    // let newCellArr: Array<WaterFallType.Cell> = []
+    let newCellArr: Array<WaterFallType.Cell> = []
     // 初始化newCells数组
-    // for (let i = 0; i < num; i++) {
-    //   newCellArr.push({
-    //     height: 0,
-    //     img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
-    //     style: { left: "0", top: "0", height: "0" }
-    //   })
-    // }
+    for (let i = 0; i < num; i++) {
+      newCellArr.push({
+        height: 0,
+        img: 'https://img.keaitupian.cn/newupload/02/1675763150281920.jpg',
+        style: { left: "0", top: "0", height: "0" }
+      })
+    }
 
     for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
@@ -231,6 +228,7 @@ const WaterFall = ({ getData, onClick, newCellArr }: WaterFallType.Props) => {
     }
 
     setCells((prevCells) => [...prevCells, ...newCellArr]);
+    onValueChange(cells)
   }
 
   // 添加了一个 500 毫秒的节流（throttle）效果,防止滚动事件频发
