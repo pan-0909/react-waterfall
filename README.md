@@ -2,12 +2,13 @@
  * @Author: panrunjun
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-28 14:28:25
+ * @LastEditTime: 2024-05-29 16:04:31
  * @Description: 
- * @FilePath: \react-waterfall\README.md
+ * @FilePath: \reactProjects\react-waterfall\README.md
 -->
 # react版本自适应瀑布流布局
 ## 引入后使用WaterFall
+- npm i react-waterfall-plugin下载
 - 先调用getColumnCount方法获取每列的盒子数目perPage
 - 把每列的盒子数目调用后端接口获取对应的数据，eg:getData(perPage)
 
