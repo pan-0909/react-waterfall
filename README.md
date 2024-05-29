@@ -2,7 +2,7 @@
  * @Author: panrunjun
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 22:20:22
+ * @LastEditTime: 2024-05-29 23:32:10
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\README.md
 -->
@@ -54,11 +54,16 @@ export default App
 
 ```
 
+## 效果演示
+![image](http://8.138.112.139:9000/blogimg/1716997456182-202405292334 -big-original.gif)
+
 ## 参数说明
-|  属性   | 说明  |  类型  | 
-|  ----  | ----  | ----  | 
-| list  | 需要使用的数据 | array | 
-| getNum  | 获取num | function  | 
+|  属性   | 说明  |  类型  | 默认值 |
+|  ----  | ----  | ----  | ----  | 
+| list  | 需要使用的数据 | Array<{img?: stringtitle?: string content?: string }> | null  | 
+| gap_height  | 单元格上下间隔 | number | 90 | 
+| range_height  | 图片的高度随机取值范围,默认150的范围是200-350,100是150-300,以此类推 | number | 150 | 
+| getNum  | 获取num | (num: number) => void  | null | 
 
 
 ## git提交规范 欢迎pr
@@ -71,6 +76,10 @@ export default App
 - test：添加或修改代码测试
 - chore：对构建流程或辅助工具和依赖库（如文档生成等）的更改
 
+## 待优化问题
+- 更换窗口大小的时候重新更新数据（待优化）setCells([])
+- 新增点赞收藏
+- 新增loding加载
 
 ## 联系我
 - 1957457389@qq.com

@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 21:32:29
+ * @LastEditTime: 2024-05-29 23:26:12
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\lib\WaterFall\index.tsx
  */
@@ -12,9 +12,7 @@ import { WaterFallType } from './types'
 import getColumnCount from '../utils/getColumnCount';
 
 // props: WaterFallType.Props
-const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
-
-  console.log(list, "newCells");
+const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFallType.Props) => {
   const cellsContainerRef = useRef<HTMLDivElement>(null);
   /**
 * @description: 最少列数
@@ -31,7 +29,7 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
   /**
  * @description: 格子之间的垂直间隙
  */
-  let GAP_HEIGHT = 15;
+  // let height = 90;
   /**
    * @description: 格子之间的水平间隙
    */
@@ -124,6 +122,7 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
     for (let i = 0; i < count; i++) {
       columnHeights.push(0);
     }
+    // 设置外盒子的宽度
     cellsContainerRef.current!.style.width = `${count * (COLUMN_WIDTH + GAP_WIDTH) - GAP_WIDTH}px`;
     // console.log(cellsContainerRef.current!.style.width, "cellsContainerRef.width");
 
@@ -147,7 +146,10 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
     if (columnHeights.length != columnCount) {
       // 重置列高度和容器宽度的数组。
       resetHeights(columnCount);
-      init([])
+      // init([])
+      // 更换窗口大小的时候重新更新数据（待优化）setCells([])
+      setCells([])
+      judgeAppend()
     } else {
       judgeAppend();
     }
@@ -156,24 +158,24 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
 
 
   // 初始化设置盒子的高度
-  const init = (cells: any) => {
-    let columnIndex;  // 最小高度的下标
-    let columnHeight;  // 最小的高度
-    for (let j = 0, k = cells.length; j < k; j++) {
-      columnIndex = getMinKey(columnHeights);
-      columnHeight = columnHeights[columnIndex];
-      let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
-      cells[j].height = key
-      columnHeights[columnIndex] = columnHeight + GAP_HEIGHT * 4 + cells[j].height; //计算插入图片后的高度
-      cells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`; //计算left偏移
-      cells[j].style.top = `${columnHeight}px`;
-      cells[j].style.height = `${cells[j].offsetHeight + CELL_PADDING}px`; //计算height偏移
+  // const init = (cells: any) => {
+  //   let columnIndex;  // 最小高度的下标
+  //   let columnHeight;  // 最小的高度
+  //   for (let j = 0, k = cells.length; j < k; j++) {
+  //     columnIndex = getMinKey(columnHeights);
+  //     columnHeight = columnHeights[columnIndex];
+  //     let key = Math.floor(Math.random() * (200 - 50 + 1)) + range_height;
+  //     cells[j].height = key
+  //     columnHeights[columnIndex] = columnHeight + gap_height + cells[j].height; //计算插入图片后的高度
+  //     cells[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`; //计算left偏移
+  //     cells[j].style.top = `${columnHeight}px`;
+  //     // cells[j].style.height = `${cells[j].offsetHeight + CELL_PADDING+30}px`; //计算height偏移
 
-      cells[j].style.height = `${cells[j].height + CELL_PADDING}px`; //计算外盒子高度
-    }
-    setCells(cells)
-    judgeAppend()
-  }
+  //     cells[j].style.height = `${cells[j].height + CELL_PADDING +30}px`; //计算外盒子高度
+  //   }
+  //   setCells(cells)
+  //   judgeAppend()
+  // }
 
   /**
    * @description: 判断是否继续加载
@@ -214,6 +216,7 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
         height: 0,
         img: list[i].img,
         title: list[i].title,
+        content: list[i].content,
         style: { left: "0", top: "0", height: "0" }
       })
     }
@@ -221,13 +224,12 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
     for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
       columnHeight = columnHeights[columnIndex];
-      let key = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+      let key = Math.floor(Math.random() * (200 - 50 + 1)) + range_height;
       newCellArr[j].height = key
-      columnHeights[columnIndex] = columnHeight + GAP_HEIGHT * 4 + newCellArr[j].height; //计算插入图片后的高度
+      columnHeights[columnIndex] = columnHeight + gap_height + newCellArr[j].height; //计算插入图片后的高度
       newCellArr[j].style.left = `${columnIndex * (COLUMN_WIDTH + GAP_WIDTH)}px`; //计算left偏移
       newCellArr[j].style.top = `${columnHeight}px`; //计算top偏移
-      // newCellArr[j].style.height = `${newCellArr[j].offsetHeight + CELL_PADDING}px`; //计算height高度
-      newCellArr[j].style.height = `${newCellArr[j].height + CELL_PADDING}px`; //计算外盒子高度
+      newCellArr[j].style.height = `${newCellArr[j].height + CELL_PADDING + 30}px`; //计算外盒子高度
     }
 
     setCells((prevCells) => [...prevCells, ...newCellArr]);
@@ -261,10 +263,11 @@ const WaterFall = ({ getNum, list }: WaterFallType.Props) => {
             <div key={index} style={cell.style} className="cell ready">
               <p>
                 <a href="#">
-                  <img src={cell.img} height={cell.height} width="190" />
+                  <img src={cell.img} height={cell.height} width="190" style={{objectFit: 'cover'}}/>
                 </a>
               </p>
               <div className='title'>{cell.title} </div>
+              <div className='content'>{cell.content} </div>
             </div>
           )
         })}

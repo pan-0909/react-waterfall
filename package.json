@@ -1,7 +1,7 @@
 {
   "name": "react-waterfall-plugin",
   "private": false,
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "panrunjun",
   "description": "react waterfall",
   "type": "module",
