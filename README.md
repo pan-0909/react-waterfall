@@ -2,7 +2,7 @@
  * @Author: panrunjun
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 23:32:10
+ * @LastEditTime: 2024-05-29 23:58:57
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\README.md
 -->
@@ -55,7 +55,7 @@ export default App
 ```
 
 ## 效果演示
-![image](http://8.138.112.139:9000/blogimg/1716997456182-202405292334 -big-original.gif)
+![image](https://github.com/pan-0909/react-waterfall/blob/main/public/git.gif)
 
 ## 参数说明
 |  属性   | 说明  |  类型  | 默认值 |
