@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-05-23 09:53:05
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-29 23:26:12
+ * @LastEditTime: 2024-05-30 21:00:25
  * @Description: 
  * @FilePath: \reactProjects\react-waterfall\lib\WaterFall\index.tsx
  */
@@ -12,8 +12,11 @@ import { WaterFallType } from './types'
 import getColumnCount from '../utils/getColumnCount';
 
 // props: WaterFallType.Props
-const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFallType.Props) => {
+const WaterFall = ({ getNum, list, gap_height = 90, range_height = 150, loading=false}: WaterFallType.Props) => {
+  console.log(list,'list');
+  
   const cellsContainerRef = useRef<HTMLDivElement>(null);
+  // const [loading, setloading] = useState(false);
   /**
 * @description: 最少列数
 */
@@ -64,13 +67,7 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
    */
   let managing = false;
 
-  /**
-   * @description: 加载单元格状态
-   */
-  let loading = false;
-
-
-  const [cells, setCells] = useState<Array<WaterFallType.Cell>>([]);
+  // const [cells, setCells] = useState<Array<WaterFallType.Cell>>([]);
 
   // 获取数组中的最小值
   const getMinVal = (arr: number[]) => {
@@ -99,6 +96,23 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
     }
     return key;
   };
+
+  /**
+   * @description: 获取最小高度
+   * @param {string} arr
+   * @return {number} 最小高度
+   * @author: panrunjun
+   */
+  const getMaxHight = (arr: string | any[]) => {
+    let height = arr[0];
+    for (let i = 1, len = arr.length; i < len; i++) {
+      if (arr[i] > height) {
+        height = arr[i];
+      }
+    }
+    return height;
+  };
+
 
   // 获取最大索引
   const getMaxKey = (arr: string | any[]) => {
@@ -142,13 +156,14 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
     // 计算调整大小后的新列计数。
     let bodyWidth: number = document.body.offsetWidth;  // 获取页面宽度
     columnCount = getColumnCount(bodyWidth, GAP_WIDTH, COLUMN_WIDTH, 1);
+
     getNum(columnCount)
     if (columnHeights.length != columnCount) {
       // 重置列高度和容器宽度的数组。
       resetHeights(columnCount);
       // init([])
       // 更换窗口大小的时候重新更新数据（待优化）setCells([])
-      setCells([])
+      // setCells([])
       judgeAppend()
     } else {
       judgeAppend();
@@ -190,21 +205,23 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
     // console.log(getMinVal(columnHeights), "盒子列表最小的高度");
     if (viewportBottom > getMinVal(columnHeights)) {
       // console.log("窗口大");
-      appendCells(columnCount);
+      appendCells(list.length);
       setTimeout(() => {
         judgeAppend()
       }, 500)
       return true;
     } else {
       // console.log("窗口小");
+      // setloading(false)
       return false;
     }
 
   }
-
+  const [maxHeight,setMaxHeight] = useState(0)
   // 添加节点
   const appendCells = (num: number) => {
-
+    
+    console.log(num, "listnum");
     let columnIndex;
     let columnHeight;  // 最小的高度
 
@@ -223,6 +240,7 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
 
     for (let j = 0; j < num; j++) {
       columnIndex = getMinKey(columnHeights);
+      setMaxHeight(getMaxHight(columnHeights))
       columnHeight = columnHeights[columnIndex];
       let key = Math.floor(Math.random() * (200 - 50 + 1)) + range_height;
       newCellArr[j].height = key
@@ -232,7 +250,8 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
       newCellArr[j].style.height = `${newCellArr[j].height + CELL_PADDING + 30}px`; //计算外盒子高度
     }
 
-    setCells((prevCells) => [...prevCells, ...newCellArr]);
+    // setCells((prevCells) => [...prevCells, ...newCellArr]);
+    
   }
 
   // 添加了一个 500 毫秒的节流（throttle）效果,防止滚动事件频发
@@ -257,13 +276,12 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
     <>
       <div id='notice' className='off'></div>
       <div ref={cellsContainerRef} id="cells">
-
-        {cells.map((cell, index) => {
+        {list.map((cell, index) => {
           return (
             <div key={index} style={cell.style} className="cell ready">
               <p>
                 <a href="#">
-                  <img src={cell.img} height={cell.height} width="190" style={{objectFit: 'cover'}}/>
+                  <img src={cell.img} height={cell.height} width="190" style={{ objectFit: 'cover' }} />
                 </a>
               </p>
               <div className='title'>{cell.title} </div>
@@ -272,7 +290,12 @@ const WaterFall = ({ getNum, list, gap_height = 90,range_height=150 }: WaterFall
           )
         })}
       </div>
-      <div id="loader" ><span>loading</span></div>
+      {
+        loading && (
+          <div id="loader" style={{marginTop:maxHeight}}><span>loading......</span></div>
+        )
+      }
+
     </>
   )
 }

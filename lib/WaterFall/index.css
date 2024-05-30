@@ -19,14 +19,18 @@ h1 {
   text-align: center;
 }
 
+
 #cells {
   margin: 0 auto;
   position: relative;
 }
 
 #loader {
-  margin: 0 auto;
+  width: 100%;
   text-align: center;
+  z-index: 99;
+  position: fixed;
+  margin-bottom: 20px;
 }
 
 #loader span {
